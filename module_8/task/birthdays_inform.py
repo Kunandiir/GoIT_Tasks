@@ -27,7 +27,7 @@ def get_birthdays_per_week(users):
     for user in users:
         
         user["birthday"] = user["birthday"].replace(year=today.year) #to ignore year
-        if user["birthday"].date() <= datetime(year=today.year, month=1, day=7).date():
+        if user["birthday"].date() <= datetime(year=today.year, month=1, day=7).date(): #NewYear fix
             user["birthday"] = user["birthday"].replace(year=today.year + 1)
         if today.date() <= user["birthday"].date() <= next_week.date():
             
