@@ -14,8 +14,8 @@ class Name(Field):
 class Phone(Field):
 
     def __init__(self, value):
-        if len(value) < 10 and not value.isdigit():
-            raise MyException("Phone number should be 10 digits long")
+        if not len(str(value)) == 10 or not value.isdigit():
+            raise MyException(f"Phone number {value} should be 10 digits long")
         super().__init__(value)
         
 
@@ -25,13 +25,13 @@ class Record():
         self.phones = []
 
     def __str__(self) -> str:
-        return f"Name: {self.name.value}, Phones: {[phone.value for phone in self.phones]}"
+        return f"Name: {self.name.value}, Phones: {[phone for phone in self.phones]}"
     
     def add_phone(self, phone_number: str):
         try:
             phone = Phone(phone_number)
             if phone not in self.phones:
-                self.phones.append(phone)
+                self.phones.append(phone.value)
         except MyException as error:
             print(error)
 
@@ -39,7 +39,7 @@ class Record():
         try:
             phone = Phone(phone_number)
             if phone in self.phones:
-                self.phones.remove(phone)
+                self.phones.remove(phone.value)
         except MyException as error:
             print(error)
     
@@ -56,7 +56,7 @@ class Record():
 
 class AddressBook(UserDict):
     def add_record(self, record: Record):
-        self.data[record.name.value] = record 
+        self.data[record.name.value] = record.phones 
 
 
     def find(self):
@@ -68,9 +68,10 @@ class AddressBook(UserDict):
 
 record = Record('John Doe')
 record.add_phone('1234567890')
-
+record.add_phone('134253')
 address_book = AddressBook()
 
 address_book.add_record(record)
 
-print(address_book.add_record)
+print(address_book)
+
