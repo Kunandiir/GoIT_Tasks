@@ -1,16 +1,22 @@
 from collections import UserDict
 
+class MyException(Exception):
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
 class Field():
-    pass
+    def __init__(self, value):
+        self.value = value
 
 
-class Name():
+class Name(Field):
     pass
 
 class Phone(Field):
-    def validate(self, value):
+
+    def __init__(self, value):
         if len(value) < 10 and not value.isdigit():
-            raise ValueError("Phone number should be 10 digits long")
+            raise MyException("Phone number should be 10 digits long")
+        super().__init__(value)
         
 
 class Record():
@@ -19,28 +25,33 @@ class Record():
         self.phones = []
 
     def __str__(self) -> str:
-        pass
+        return f"Name: {self.name.value}, Phones: {[phone.value for phone in self.phones]}"
     
     def add_phone(self, phone_number: str):
-        phone = Phone(phone_number)
-        phone.validate(phone_number)
-        if phone not in self.phones:
-            self.phones.append(phone)
+        try:
+            phone = Phone(phone_number)
+            if phone not in self.phones:
+                self.phones.append(phone)
+        except MyException as error:
+            print(error)
 
     def delete_phone(self, phone_number:str):
-        phone = Phone(phone_number)
-        phone.validate(phone_number)
-        if phone in self.phones:
-            self.phones.remove(phone)
+        try:
+            phone = Phone(phone_number)
+            if phone in self.phones:
+                self.phones.remove(phone)
+        except MyException as error:
+            print(error)
     
     def edit_phone(self, old_phone:str, new_phone:str):
-        old_phone = Phone(old_phone)
-        old_phone.validate(old_phone)
-        new_phone = Phone(new_phone)
-        new_phone.validate(old_phone)
-        for i in range(self.phones):
-            if self.phones[i] == old_phone:
-                self.phones[i] = new_phone
+        try:
+            old_phone = Phone(old_phone)
+            new_phone = Phone(new_phone)
+            for i in range(self.phones):
+                if self.phones[i] == old_phone:
+                    self.phones[i] = new_phone
+        except MyException as error:
+            print(error)
 
 
 class AddressBook(UserDict):
@@ -53,3 +64,13 @@ class AddressBook(UserDict):
 
     def delete(self):
         pass
+
+
+record = Record('John Doe')
+record.add_phone('1234567890')
+
+address_book = AddressBook()
+
+address_book.add_record(record)
+
+print(address_book.add_record)
