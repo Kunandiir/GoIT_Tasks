@@ -59,11 +59,17 @@ class AddressBook(UserDict):
         self.data[record.name.value] = record.phones 
 
 
-    def find(self):
-        pass
+    def find(self, item):
+        for name in self.data:
+            if name == item:
+                return f'Number(s) for {name} is {self.data[name]}'
 
-    def delete(self):
-        pass
+    def delete(self, item):
+        for name in self.data:
+            if name == item:
+                self.data.pop(name)
+                return f'Name {name} deleted from address book'
+        
 
 
 record = Record('John Doe')

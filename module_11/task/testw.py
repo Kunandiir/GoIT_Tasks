@@ -7,16 +7,16 @@ class MyException(Exception):
 
 class Field():
     def __init__(self, value):
-        self._value = None
+        self.__value = None
         self.value = value
 
     @property
     def value(self):
-        return self._value
+        return self.__value
     
     @value.setter
     def value(self, value):
-        self._value = value
+        self.__value = value
 
 class Name(Field):
     pass
@@ -28,7 +28,7 @@ class Phone(Field):
         if not len(str(value)) == 10 or not value.isdigit():
             raise MyException(f"Phone number {value} should be 10 digits long")
         else:
-            self._value = value
+            self.__value = value
 
 class Birthday(Field):
 
@@ -36,7 +36,7 @@ class Birthday(Field):
     def value(self, value):
         if value != None:
             if datetime.today().date() >= datetime.strptime(value, "%d.%m.%Y").date():
-                self._value = datetime.strptime(value, "%d.%m.%Y").date()
+                self.__value = datetime.strptime(value, "%d.%m.%Y").date()
             else:
                 raise MyException(f"Incorect birthday date, use format dd.mm.yy")
 class Record():
@@ -80,7 +80,7 @@ class Record():
         else:
             next_birthday = datetime(datetime.today().year, self.birthday.value.month, self.birthday.value.day)
             if next_birthday < datetime.today():
-                next_birthday = datetime(datetime.today().year + 1, self.birthday.value.month, self.birthday.value.day)
+                next_birthday = datetime(datetime.today().year + 1, self.birthday.month, self.birthday.day)
             return (next_birthday - datetime.today()).days
 class AddressBook(UserDict):
     def add_record(self, record: Record):
@@ -97,19 +97,11 @@ class AddressBook(UserDict):
             if name == item:
                 self.data.pop(name)
                 return f'Name {name} deleted from address book'
-    
-    def iterator(self, number):
-        count = 0
-        result = ''
-        for item, record in self.data.items():
-            result += f'{item}: {record} \n'
-            count += 1
-            if count >= number:
-                return result
+        
 
 
 
-record = Record('John Doe', '22.2.2022')
+record = Record('John Doe', '22.2.2020')
 record.add_phone('1234567890')
 record.add_phone('1342535465')
 record2 = Record('Alex Hirsh')
@@ -119,8 +111,8 @@ address_book = AddressBook()
 address_book.add_record(record)
 address_book.add_record(record2)
 print(address_book.find('John Doe'))
-#print(address_book.delete('John Doe'))
-print(record.days_to_birthday())
-#print(address_book)
+print(address_book.delete('John Doe'))
+#print(record.birthday.value)
+#print(record.days_to_birthday())
+print(address_book)
 
-print(address_book.iterator(2))
