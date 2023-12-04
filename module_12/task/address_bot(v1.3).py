@@ -88,8 +88,10 @@ class Record():
             return (next_birthday - datetime.today()).days
 class AddressBook(UserDict):
     def add_record(self, record: Record):
-        self.data[record.name.value] = record.phones 
-
+        if record.name.value not in self.data:
+            self.data[record.name.value] = record.phones 
+        else:
+            raise MyException('Name already exist')
 
     def find(self, item):
         nums_lst = []
@@ -120,12 +122,12 @@ class AddressBook(UserDict):
                 return result
     
 
-    def dump(self, path = "module_12/task/AddressBook.json"):
+    def dump(self, path = "module_12/task/address_book.json"):
         with open(path, 'w') as fl:
             json.dump(self.data, fl)
 
     
-    def load(self, path = "module_12/task/AddressBook.json"):
+    def load(self, path = "module_12/task/address_book.json"):
         try:
             with open(path, 'r') as fl:
                 self.data = json.load(fl)
@@ -145,6 +147,7 @@ if __name__=='__main__':
 
 print(address_book)
 print(address_book.find('123'))
+
 '''
 record = Record('John Doe', '22.2.2022')
 record.add_phone('1234567890')
@@ -156,8 +159,8 @@ address_book.add_record(record)
 address_book.add_record(record2)
 #print(address_book.delete('John Doe'))
 print(record.days_to_birthday())
-address_book.dump()
 print(address_book.iterator(2))
 print(')' *10)
 print(address_book)
+
 '''
