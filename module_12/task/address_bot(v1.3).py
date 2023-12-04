@@ -1,5 +1,9 @@
 from collections import UserDict
 from datetime import datetime,date
+import json
+import atexit
+
+
 
 class MyException(Exception):
     def __init__(self, *args: object) -> None:
@@ -88,9 +92,17 @@ class AddressBook(UserDict):
 
 
     def find(self, item):
+        nums_lst = []
         for name in self.data:
-            if name == item:
-                return f'Number(s) for {name} is {self.data[name]}'
+            if item in name:
+                nums_lst.append(f'Number(s) for {name} is {self.data[name]}') 
+            else:
+                for num in self.data[name]:
+                    if item in num: 
+                        nums_lst.append(f'Number(s) for {name} is {self.data[name]}') 
+
+        return "\n".join(nums_lst)
+
 
     def delete(self, item):
         for name in self.data:
@@ -106,21 +118,46 @@ class AddressBook(UserDict):
             count += 1
             if count >= number:
                 return result
+    
+
+    def dump(self, path = "module_12/task/AddressBook.json"):
+        with open(path, 'w') as fl:
+            json.dump(self.data, fl)
+
+    
+    def load(self, path = "module_12/task/AddressBook.json"):
+        try:
+            with open(path, 'r') as fl:
+                self.data = json.load(fl)
+        except:
+            pass
 
 
 
+if __name__=='__main__':
+    address_book = AddressBook()
+    address_book.load()
+    atexit.register(address_book.dump)
+
+
+
+
+
+print(address_book)
+print(address_book.find('123'))
+'''
 record = Record('John Doe', '22.2.2022')
 record.add_phone('1234567890')
 record.add_phone('1342535465')
 record2 = Record('Alex Hirsh')
 record2.add_phone('1234666890')
-address_book = AddressBook()
 
 address_book.add_record(record)
 address_book.add_record(record2)
-print(address_book.find('John Doe'))
 #print(address_book.delete('John Doe'))
 print(record.days_to_birthday())
-#print(address_book)
-
+address_book.dump()
 print(address_book.iterator(2))
+print(')' *10)
+print(address_book)
+'''
